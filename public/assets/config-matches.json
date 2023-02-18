@@ -1,6 +1,6 @@
 {
   "heading": "Charged Up - 2023",
-  "logo": "logo.png",
+  "logo": "goonsquadlogo.png",
   "pages": [
     {
       "name": "Setup+Autonomous",
@@ -104,6 +104,10 @@
             "Very Effective"
           ],
           "labelColspan": 2
+        },
+        {
+          "name": "Timed Cycle",
+          "type": "stopwatch"
         }
       ]
     },
