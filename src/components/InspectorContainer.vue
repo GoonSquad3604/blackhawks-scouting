@@ -10,21 +10,30 @@
       <button @click="deleteData">Delete</button>
       <button @click="downloadData">Download</button>
       <button @click="clearData">Clear All</button>
+      <button v-if="selectedEntry && hasSelectedRecords && selectedRecords.size == 1" @click="generateQRCode">Generate QR Code</button>
+      <span v-else>Select Only 1 record to Generate a QR Code</span>
     </template>
+  </div>
+  <div class="table-container" v-show="qrGenerated">
+    <qrcode-vue :value="qrValue" :size="120" level="H" />
   </div>
   <div class="table-container">
     <span v-if="selectedEntry === undefined">No Data</span>
     <InspectorTable v-else v-model="selectedRecords" :data="selectedEntry" />
   </div>
   <a :hidden="true" :download="entries[selectedIdx]" ref="downloadLink"></a>
+  <!-- <qrcode-vue :value="value" :size="size" level="H" /> -->
 </template>
 
 <script setup lang="ts">
 import InspectorTable from "./InspectorTable.vue";
 import { useWidgetsStore } from "@/common/stores.js";
+import QrcodeVue from 'qrcode.vue';
 
 const widgets = useWidgetsStore();
 let selectedIdx = $ref(0); // The index of the entry selected in the combobox
+let qrGenerated = false;
+let qrValue = "";
 
 const downloadLink = $ref<HTMLAnchorElement>();
 const selectedRecords = $ref(new Set<number>());
@@ -65,6 +74,19 @@ function clearData() {
 
   widgets.savedData.clear();
   selectedIdx = 0; // Reset selected index
+}
+
+function generateQRCode(): void {
+  qrGenerated = true;
+  let currRecord = filterRecords(true)[0];
+  let code = [];
+  for(var rec in currRecord){
+    code.push("\"" + currRecord[rec] + "\"");
+  }
+  qrValue = code.join();
+  console.log(qrGenerated);
+  
+  
 }
 </script>
 

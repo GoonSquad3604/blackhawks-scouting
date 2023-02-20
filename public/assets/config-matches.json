@@ -14,6 +14,7 @@
           "name": "Starting Position",
           "type": "positions",
           "file": "field.png",
+          "allowMultiple": true,
           "height": 200,
           "colspan": 2
         },
