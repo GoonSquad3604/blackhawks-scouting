@@ -12,6 +12,9 @@
     <li>
       <RouterLink :to="{ name: 'inspector' }">Data Inspector</RouterLink>
     </li>
+    <li>
+      <RouterLink :to="{ name: 'analysis' }">Data Analysis</RouterLink>
+    </li>
   </ul>
 </template>
 

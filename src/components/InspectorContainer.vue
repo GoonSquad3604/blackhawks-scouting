@@ -14,8 +14,9 @@
       <span v-else>Select Only 1 record to Generate a QR Code</span>
     </template>
   </div>
-  <div class="table-container" v-show="qrGenerated">
-    <qrcode-vue :value="qrValue" :size="120" level="H" />
+  <div class="table-container" >
+    <!-- <qrcode-vue :value="qrValue" :size="120" level="H" /> -->
+    <!-- <qrcode-stream @decode="decodeQR"></qrcode-stream> -->
   </div>
   <div class="table-container">
     <span v-if="selectedEntry === undefined">No Data</span>
@@ -29,6 +30,8 @@
 import InspectorTable from "./InspectorTable.vue";
 import { useWidgetsStore } from "@/common/stores.js";
 import QrcodeVue from 'qrcode.vue';
+import { QrcodeStream, QrcodeDropZone, QrcodeCapture } from 'vue-qrcode-reader'
+
 
 const widgets = useWidgetsStore();
 let selectedIdx = $ref(0); // The index of the entry selected in the combobox
@@ -87,6 +90,20 @@ function generateQRCode(): void {
   console.log(qrGenerated);
   
   
+}
+
+async function decodeQR(input: PromiseLike<{ content: any; location: any; }> | { content: any; location: any; }) {
+    try {
+      const {
+        content,      // decoded String
+        location      // QR code coordinates
+      } = await input
+
+      // ...
+    } catch (error) {
+      // ...
+    }
+    console.log(input)
 }
 </script>
 
