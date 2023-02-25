@@ -1,6 +1,7 @@
 <template>
   <div id="controls-container">
-    <RouterLink :to="{ name: 'home' }" style="margin-right: 40px;">Home</RouterLink>
+    <RouterLink :to="{ name: 'home' }" style="margin-right: 20px;">Home</RouterLink>
+    <RouterLink :to="{ name: 'analysis' }" style="margin-right: 20px;">Data Analysis</RouterLink>
     <span v-if="widgets.savedData.size === 0">&lt;No Entries&gt;</span>
     <template v-else>
       <label for="entry-select">Entry</label>
@@ -13,11 +14,17 @@
       <button v-if="selectedEntry && hasSelectedRecords && selectedRecords.size == 1" @click="generateQRCode">Generate QR Code</button>
       <span v-else>Select Only 1 record to Generate a QR Code</span>
     </template>
+    <br/>
+    <label for="team-select">Teams</label>
+      <select id="team-select" v-model.number="selectedteam" @change="filterTeams()">
+        <option v-for="team in teams" :key="team.team_number" :value="team.team_number">{{ team.nickname }}</option>
+      </select>
+      <button @click="clearTeamFilter">Clear Filter</button>
   </div>
-  <div class="table-container" >
-    <!-- <qrcode-vue :value="qrValue" :size="120" level="H" /> -->
-    <!-- <qrcode-stream @decode="decodeQR"></qrcode-stream> -->
-  </div>
+  <!-- <div class="table-container" >
+    <qrcode-vue :value="qrValue" :size="120" level="H" />
+    <qrcode-stream @decode="decodeQR"></qrcode-stream>
+  </div> -->
   <div class="table-container">
     <span v-if="selectedEntry === undefined">No Data</span>
     <InspectorTable v-else v-model="selectedRecords" :data="selectedEntry" />
@@ -28,13 +35,19 @@
 
 <script setup lang="ts">
 import InspectorTable from "./InspectorTable.vue";
-import { useWidgetsStore } from "@/common/stores.js";
+import { useWidgetsStore, useTBAStore } from "@/common/stores.js";
 import QrcodeVue from 'qrcode.vue';
 import { QrcodeStream, QrcodeDropZone, QrcodeCapture } from 'vue-qrcode-reader'
+import { isTemplateElement, jSXAttribute } from "@babel/types";
 
 
 const widgets = useWidgetsStore();
 let selectedIdx = $ref(0); // The index of the entry selected in the combobox
+let selectedteam = $ref(0);
+
+
+const tba = useTBAStore();
+
 let qrGenerated = false;
 let qrValue = "";
 
@@ -43,7 +56,15 @@ const selectedRecords = $ref(new Set<number>());
 const hasSelectedRecords = $computed(() => selectedRecords.size > 0);
 
 const entries = $computed(() => [...widgets.savedData.keys()]); // The entries in local storage
-const selectedEntry = $computed(() => widgets.savedData.get(entries[selectedIdx])); // The selected entry
+let selectedEntry = $computed(() => widgets.savedData.get(entries[selectedIdx])); // The selected entry
+
+let teams: any[] = tba.savedData.get("teams");
+
+teams.sort((a, b) => {
+  return a.team_number - b.team_number;
+})
+
+console.log(teams)
 
 // Filters records in the selected entry based on the user selection.
 // If there are no records selected, the filter directly uses the given state, returning either all or no records.
@@ -77,6 +98,26 @@ function clearData() {
 
   widgets.savedData.clear();
   selectedIdx = 0; // Reset selected index
+}
+
+function clearTeamFilter() {
+  selectedteam = 0;
+  selectedEntry = widgets.savedData.get(entries[selectedIdx])
+
+  return;
+}
+
+function filterTeams() {
+  
+  if(selectedteam > 0 && selectedEntry){
+    let filteredList = selectedEntry.values.filter(v => v.filter( s => s == selectedteam.toString()).length > 0)
+    selectedEntry.values = filteredList;
+    return;
+  }
+  else if(selectedteam == 0){
+    clearTeamFilter()
+  }
+  
 }
 
 function generateQRCode(): void {

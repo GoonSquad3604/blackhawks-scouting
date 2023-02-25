@@ -1,15 +1,15 @@
 <template>
-    <div id="inspector-container">
-      <InspectorContainer />
+    <div id="analysis-container">
+      <AnalysisContainer />
     </div>
   </template>
   
   <script setup lang="ts">
-  import InspectorContainer from "@/components/InspectorContainer.vue";
+  import AnalysisContainer from "@/components/AnalysisContainer.vue";
   </script>
   
   <style>
-  #inspector-container {
+  #analysis-container {
     display: grid;
     height: 100vh;
     gap: 20px;

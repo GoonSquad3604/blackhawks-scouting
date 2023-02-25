@@ -20,4 +20,7 @@ const defaultValues = new Map<string, unknown>([
 
 const value = $ref(defaultValues.get(props.data.type) ?? "");
 defineExpose({ index: useWidgetsStore().addWidgetValue(props.data, $$(value)) });
+if((props.data.type == "checkbox" || props.data.type == "number") && props.data.points){
+  useWidgetsStore().addPoints(props.data, $$(value), props.data.points, []);
+}
 </script>

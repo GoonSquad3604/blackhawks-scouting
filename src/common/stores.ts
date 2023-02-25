@@ -9,6 +9,19 @@ interface WidgetValue {
   readonly value: Ref;
 }
 
+interface PointValue {
+  readonly name: string;
+  readonly value: Ref;
+  readonly pointval: number;
+  readonly pointlist: number[];
+}
+
+interface AggregateValue {
+  readonly name: string;
+  readonly type: string;
+  readonly value: Ref;
+}
+
 export interface SavedData {
   header: string[]; // Each element is a value in the CSV header
   values: string[][]; // Each element is a CSV record, each element in a record is a widget value
@@ -26,6 +39,8 @@ export const useConfigStore = defineStore("config", () => {
 export const useWidgetsStore = defineStore("widgets", () => {
   // Temporary array for widgets in the current loaded form (stored in RAM)
   const values = $ref(new Array<WidgetValue>());
+  const points = $ref(new Array<PointValue>());
+  const aggregates = $ref(new Array<PointValue>());
 
   // All saved data (config names in the map correspond to form data for that config, stored on disk)
   const savedData = $ref(useStorage("widgetsSavedData", new Map<string, SavedData>()));
@@ -69,15 +84,67 @@ export const useWidgetsStore = defineStore("widgets", () => {
     return values.push({ name, value }) - 1;
   }
 
+  function addPoints(key: string | WidgetData, value: Ref, pointval: number, pointlist: number[]){
+    let name = null;
+
+    if (typeof key === "string") {
+      // String key provided, use it as the name
+      name = key;
+    } else if (key.name !== undefined) {
+      // Data object key provided, use its name field if it's defined
+      name = (key.prefix ? `${key.prefix}-${key.name}` : key.name).replaceAll(/\s/g, "");
+    } else {
+      // Invalid argument
+      return -1;
+    }
+
+    return points.push({ name, value, pointval, pointlist }) - 1;
+  }
+
+  function addAggregate(key: string | WidgetData, type: string, value: Ref) {
+    let name = null;
+
+    if (typeof key === "string") {
+      // String key provided, use it as the name
+      name = key;
+    } else if (key.name !== undefined) {
+      // Data object key provided, use its name field if it's defined
+      name = (key.prefix ? `${key.prefix}-${key.name}` : key.name).replaceAll(/\s/g, "");
+    } else {
+      // Invalid argument
+      return -1;
+    }
+
+    //return aggregates.push({ name, value, pointval, pointlist }) - 1;
+  }
+
   // Saves the temporary array of widget data to a record in local storage.
   function save() {
     // Turns a value into a string. Arrays are space-delimited to minimize collision with the CSV format.
     const stringify = (value: unknown) => Array.isArray(value) ? value.join(" ") : String(value);
 
     // Get header and record from the data (`name` is already a string so it does not need stringification)
+    let header = values.map(i => i.name);
+    let record = values.map(i => stringify(i.value));
+    //Also add Points contributed using the points value of certain widgets
+    if(points.length > 0){
+      header = header.concat("PointsContributed");
+      let pointTotal = points.reduce(function(a,b){
+        
+        //if it has a pointlist it must be a dropdown or radio btn, so pull the corresponding point value
+        if(b.pointlist.length > 0){
+          return a + b.pointlist[b.value];
+        }
+        else{
+          return a + b.value * b.pointval;
+        } 
+      }, 0);
+
+      record = record.concat(pointTotal.toString());
+    }
     // Then add the current timestamp as the last field in the record
-    const header = values.map(i => i.name).concat("ScoutedTime")
-    const record = values.map(i => stringify(i.value)).concat(new Date().toString());
+    header = header.concat("ScoutedTime");
+    record = record.concat(new Date().toString());
     
     // Add to saved local storage
     const entry = savedData.get(config.name);
@@ -91,7 +158,7 @@ export const useWidgetsStore = defineStore("widgets", () => {
     }
   }
 
-  return $$({ values, savedData, lastWidgetRowEnd, downloadLink, makeDownloadLink, addWidgetValue, save });
+  return $$({ values, savedData, lastWidgetRowEnd, downloadLink, makeDownloadLink, addWidgetValue, save, addPoints, addAggregate });
 });
 
 // Store to contain widget validation status flags
@@ -113,11 +180,16 @@ export const useTBAStore = defineStore("tba", () => {
     if (code === "") {
       const localData = savedData.get(name);
       const promise = await Promise.resolve(localData ?? {});
+      
       return { code: eventCode, data: promise };
     }
 
+    let apiurl = name == 'rankings' ? 
+      `https://www.thebluealliance.com/api/v3/event/${code}/${name}` :
+      `https://www.thebluealliance.com/api/v3/event/${code}/${name}/simple`;
+
     // Otherwise, fetch the data from the API, passing the API key (must be set in env)
-    const fetchData = await fetch(`https://www.thebluealliance.com/api/v3/event/${code}/${name}/simple`, {
+    const fetchData = await fetch(apiurl, {
       headers: { "X-TBA-Auth-Key": import.meta.env.VITE_TBA_API_KEY }
     });
 

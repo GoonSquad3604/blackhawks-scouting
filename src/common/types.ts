@@ -6,6 +6,8 @@ export interface ConfigData {
   skipTeamSelection?: boolean;
   forceQualifiers?: boolean;
   pages: PageData[];
+  showInAnalysis: boolean;
+  showInTeamOverview: boolean;
 }
 
 export interface PageData {
@@ -26,6 +28,7 @@ export interface WidgetData {
   rowspan?: number;
   colspan?: number;
   labelColspan?: number;
+  //sortable?: boolean;
 
   // Type-specific required fields
   name?: string;
@@ -47,12 +50,30 @@ export interface WidgetData {
   lapLabel?: string;
   stopLabel?: string;
   maxLaps?: number;
+  points?: number; //pts associated with widget. Used for aggregate score. applical to checkmarks and numbers/spinboxes
+  pointsForOptions?: number[]; // pts for each option. Array must match up with options array for dropdowns, multicheckboxes and radio btns
+
+  //Type-specific logic fields
   validation?: ValidationData;
+  aggregates?: AggregateData[];
+  filter?: FilterSetup; // filter on analysis screen
 }
 
 export interface ValidationData {
   comparison: string;
   value: number | number[];
+}
+
+export interface AggregateData {
+  aggregate: string; //Average, Min, Max and Sum are supported
+  sortable: boolean;
+}
+
+export interface FilterSetup {
+  type?: string; //if undefined it defaults to the type for the widget. Works for dropdown, checkbox, numbers and radio
+  enabled: boolean;
+  label: string;
+  comparisonEnabled: boolean;
 }
 
 export enum LabelType {

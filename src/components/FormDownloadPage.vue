@@ -14,6 +14,9 @@
       <RouterLink :to="{ name: 'inspector' }">Data Inspector</RouterLink>
     </FormGroup>
     <FormGroup :label-type="LabelType.None" :colspan="2" align="center">
+      <RouterLink :to="{ name: 'analysis' }">Data Analysis</RouterLink>
+    </FormGroup>
+    <FormGroup :label-type="LabelType.None" :colspan="2" align="center">
       <RouterLink :to="{ name: 'home' }">Home</RouterLink>
     </FormGroup>
   </FormPage>

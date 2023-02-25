@@ -15,4 +15,7 @@ const props = defineProps<{
 
 const value = $ref(props.data.default ?? 0);
 defineExpose({ index: useWidgetsStore().addWidgetValue(props.data, $$(value)) });
+if(props.data.pointsForOptions){
+  useWidgetsStore().addPoints(props.data, $$(value), 0, props.data.pointsForOptions);
+}
 </script>

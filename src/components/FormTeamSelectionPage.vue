@@ -6,6 +6,7 @@
     </FormGroup>
     <FormGroup :label-type="LabelType.PlainText" name="Teams Loaded">{{ teamsLoadStatus }}</FormGroup>
     <FormGroup :label-type="LabelType.PlainText" name="Matches Loaded">{{ matchesLoadStatus }}</FormGroup>
+    <FormGroup :label-type="LabelType.PlainText" name="Rankings Loaded">{{ rankingsLoadStatus }}</FormGroup>
     <FormGroup :label-type="LabelType.LabelTag" id="match-level-input" name="Match Level">
       <select id="match-level-input" v-model.number="matchLevel" :disabled="config.data.forceQualifiers">
         <option value="0">Qualifications</option>
@@ -58,9 +59,11 @@ const selectedTeam = $ref(0);
 
 const teamsLoadStatus = $ref("");
 const matchesLoadStatus = $ref("");
+const rankingsLoadStatus = $ref("");
 
 const teams = $ref<unknown[]>();
 const matches = $ref<unknown[]>();
+const rankings = $ref<unknown[]>();
 
 // The match data based on the selected level and number
 const currentMatch = $computed(() => {
@@ -116,11 +119,14 @@ const teamsList = $computed(() => {
 // The exported team information
 const teamData = $computed(() => teamsList[selectedTeam] ? Object.values(teamsList[selectedTeam]).join() : "");
 
+const teamNumber = $computed(() => teamsList[selectedTeam] ? teamsList[selectedTeam].number : "");
+
 // Add values to export
 widgets.addWidgetValue("EventKey", $$(eventKey));
 widgets.addWidgetValue("MatchLevel", $$(matchLevel));
 widgets.addWidgetValue("MatchNumber", $$(matchNumber));
 widgets.addWidgetValue("Team", $$(teamData));
+widgets.addWidgetValue("TeamNumber", $$(teamNumber));
 
 // Updates the loaded status message for a variable.
 // This function takes Ref objects to get a behavior similar to pass-by-reference in C++.
@@ -139,6 +145,7 @@ function updateStatus(msg: Ref<string>, saveVar: Ref<unknown>, { code, data }: T
 function loadTBAData() {
   tba.load(eventKey, "teams").then(value => updateStatus($$(teamsLoadStatus), $$(teams), value));
   tba.load(eventKey, "matches").then(value => updateStatus($$(matchesLoadStatus), $$(matches), value));
+  tba.load(eventKey, "rankings").then(value => updateStatus($$(rankingsLoadStatus), $$(rankings), value));
 }
 </script>
 

@@ -20,6 +20,9 @@ const max = props.data.max ?? Number.MAX_SAFE_INTEGER;
 
 let value = $ref(min);
 defineExpose({ index: useWidgetsStore().addWidgetValue(props.data, $$(value)) });
+if(props.data.points){
+  useWidgetsStore().addPoints(props.data, $$(value), props.data.points, []);
+}
 
 // Updates the value of the widget.
 const setValue = (newValue: number) => value = inRange(newValue, min, max) ? newValue : clamp(newValue, min, max);

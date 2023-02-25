@@ -1,6 +1,8 @@
 {
   "heading": "Charged Up - 2023",
   "logo": "goonsquadlogo.png",
+  "showInAnalysis": true,
+  "showInOverview": true,
   "pages": [
     {
       "name": "Setup+Autonomous",
@@ -20,7 +22,8 @@
         },
         {
           "name": "Left Community",
-          "type": "checkbox"
+          "type": "checkbox",
+          "points": 3
         },
         {
           "type": "picture",
@@ -35,17 +38,38 @@
           "type": "spinbox",
           "prefix": "Auto",
           "row": 4,
-          "col": 1
+          "col": 1,
+          "points": 6,
+          "aggregates": [
+            {
+              "aggregate": "average",
+              "sortable": true
+            }
+          ]
         },
         {
           "name": "Middle Scored",
           "type": "spinbox",
-          "prefix": "Auto"
+          "prefix": "Auto",
+          "points": 4,
+          "aggregates": [
+            {
+              "aggregate": "average",
+              "sortable": true
+            }
+          ]
         },
         {
           "name": "Bottom Scored",
           "type": "spinbox",
-          "prefix": "Auto"
+          "prefix": "Auto",
+          "points": 3,
+          "aggregates": [
+            {
+              "aggregate": "average",
+              "sortable": true
+            }
+          ]
         },
         {
           "type": "spacer",
@@ -54,12 +78,24 @@
         {
           "name": "Docked To Charging Station",
           "type": "checkbox",
-          "labelColspan": 2
+          "labelColspan": 2,
+          "aggregates": [
+            {
+              "aggregate": "average",
+              "sortable": true
+            }
+          ]
         },
         {
           "name": "Charging Station Engaged",
           "type": "checkbox",
-          "labelColspan": 2
+          "labelColspan": 2,
+          "aggregates": [
+            {
+              "aggregate": "average",
+              "sortable": true
+            }
+          ]
         }
       ]
     },
@@ -77,19 +113,33 @@
           "name": "Top Scored",
           "type": "spinbox",
           "row": 1,
-          "col": 1
+          "col": 1,
+          "points": 5,
+          "aggregates": [
+            {
+              "aggregate": "average",
+              "sortable": true
+            },
+            {
+              "aggregate": "max",
+              "sortable": true
+            }
+          ]
         },
         {
           "name": "Middle Scored",
-          "type": "spinbox"
+          "type": "spinbox",
+          "points": 3
         },
         {
           "name": "Bottom Scored",
-          "type": "spinbox"
+          "type": "spinbox",
+          "points": 2
         },
         {
           "name": "Links Scored",
-          "type": "spinbox"
+          "type": "spinbox",
+          "points": 5
         },
         {
           "name": "Co-Op Bonus",
@@ -124,7 +174,13 @@
             "Parked",
             "None"
           ],
-          "default": 3
+          "default": 3,
+          "pointsForOptions": [
+            10,
+            6,
+            2,
+            0
+          ]
         },
         {
           "name": "Failed To Engage",
