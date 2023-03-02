@@ -74,6 +74,17 @@ export const useWidgetsStore = defineStore("widgets", () => {
     return URL.createObjectURL(new Blob([[header, ...records].join("\n")], { type: "text/csv" }));
   }
 
+  function makeAggregateDownloadLink(data: SavedData): string {
+    // Transforms an array of strings into valid CSV by escaping quotes, then joining each value.
+    // https://en.wikipedia.org/wiki/Comma-separated_values
+    const escape = (s: string[]) => s.map(i => `"${i.replaceAll('"', '""')}"`).join();
+
+    // Escape the header and list of records, then put them together into a blob for downloading
+    const header = escape(data.aggregateHeaders);
+    const records = data.aggregateValues.map(a => a.aggregates).map(escape);
+    return URL.createObjectURL(new Blob([[header, ...records].join("\n")], { type: "text/csv" }));
+  }
+
   // Adds a widget and its reactive value to a temporary array.
   function addWidgetValue(key: string | WidgetData, value: Ref) {
     let name = null;
@@ -162,7 +173,7 @@ export const useWidgetsStore = defineStore("widgets", () => {
     // find the position in array of the team number and use the team number as first col in aggregate table
     const teampos = header.findIndex(h => h == "TeamNumber");
     const teamnum = teampos ? record[teampos] : 0;
-    let aggregateHeader = ["team"].concat(aggregates.map(i => i.name + "_" + i.type));
+    let aggregateHeader = ["Team"].concat(aggregates.map(i => i.name + "_" + i.type));
     
     //get aggregate data for this submission and then add match and points
     aggregateHeader.push("PointsContributed_Average");
@@ -240,7 +251,7 @@ export const useWidgetsStore = defineStore("widgets", () => {
     }
   }
 
-  return $$({ values, savedData, lastWidgetRowEnd, downloadLink, makeDownloadLink, addWidgetValue, save, addPoints, addAggregate });
+  return $$({ values, savedData, lastWidgetRowEnd, downloadLink, makeDownloadLink, addWidgetValue, save, addPoints, addAggregate, makeAggregateDownloadLink });
 });
 
 // Store to contain widget validation status flags
