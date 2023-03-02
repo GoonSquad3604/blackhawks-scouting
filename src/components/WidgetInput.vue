@@ -23,4 +23,11 @@ defineExpose({ index: useWidgetsStore().addWidgetValue(props.data, $$(value)) })
 if((props.data.type == "checkbox" || props.data.type == "number") && props.data.points){
   useWidgetsStore().addPoints(props.data, $$(value), props.data.points, []);
 }
+
+if((props.data.type == "checkbox" || props.data.type == "number") && props.data.aggregates && props.data.aggregates.length > 0){
+  props.data.aggregates.forEach(a => {
+    useWidgetsStore().addAggregate(props.data, a.aggregate, $$(value));
+  });
+}
+
 </script>

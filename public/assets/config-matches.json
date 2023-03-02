@@ -129,12 +129,33 @@
         {
           "name": "Middle Scored",
           "type": "spinbox",
-          "points": 3
+          "points": 3,
+          "aggregates": [
+            {
+              "aggregate": "average",
+              "sortable": true
+            },
+            {
+              "aggregate": "max",
+              "sortable": true
+            }
+          ]
         },
+        
         {
           "name": "Bottom Scored",
           "type": "spinbox",
-          "points": 2
+          "points": 2,
+          "aggregates": [
+            {
+              "aggregate": "average",
+              "sortable": true
+            },
+            {
+              "aggregate": "max",
+              "sortable": true
+            }
+          ]
         },
         {
           "name": "Links Scored",

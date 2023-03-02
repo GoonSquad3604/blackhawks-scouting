@@ -25,7 +25,7 @@
 
     function getSortables(){
         console.log(config);
-        console.log(widgets);
+        console.log(widgets.savedData);
     }
     
   </script>

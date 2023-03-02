@@ -64,8 +64,6 @@ teams.sort((a, b) => {
   return a.team_number - b.team_number;
 })
 
-console.log(teams)
-
 // Filters records in the selected entry based on the user selection.
 // If there are no records selected, the filter directly uses the given state, returning either all or no records.
 const filterRecords = (state: boolean) => (selectedEntry === undefined)

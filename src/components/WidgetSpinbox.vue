@@ -20,8 +20,15 @@ const max = props.data.max ?? Number.MAX_SAFE_INTEGER;
 
 let value = $ref(min);
 defineExpose({ index: useWidgetsStore().addWidgetValue(props.data, $$(value)) });
+
 if(props.data.points){
   useWidgetsStore().addPoints(props.data, $$(value), props.data.points, []);
+}
+
+if(props.data.aggregates && props.data.aggregates.length > 0){
+  props.data.aggregates.forEach(a => {
+    useWidgetsStore().addAggregate(props.data, a.aggregate, $$(value));
+  });
 }
 
 // Updates the value of the widget.

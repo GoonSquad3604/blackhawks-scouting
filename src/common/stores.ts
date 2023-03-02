@@ -22,9 +22,17 @@ interface AggregateValue {
   readonly value: Ref;
 }
 
+interface TeamAggregate {
+  team: string,
+  aggregates: string[]
+}
+
+
 export interface SavedData {
   header: string[]; // Each element is a value in the CSV header
   values: string[][]; // Each element is a CSV record, each element in a record is a widget value
+  aggregateHeaders: string[]; // Each element is a value in the csv header for the aggregate/analysis page
+  aggregateValues: TeamAggregate[] ; // Each element is a csv record, each element is a aggregate for each team. There will be a row for each team.
 }
 
 // Store to contain configuration data for the scouting form
@@ -40,7 +48,7 @@ export const useWidgetsStore = defineStore("widgets", () => {
   // Temporary array for widgets in the current loaded form (stored in RAM)
   const values = $ref(new Array<WidgetValue>());
   const points = $ref(new Array<PointValue>());
-  const aggregates = $ref(new Array<PointValue>());
+  const aggregates = $ref(new Array<AggregateValue>());
 
   // All saved data (config names in the map correspond to form data for that config, stored on disk)
   const savedData = $ref(useStorage("widgetsSavedData", new Map<string, SavedData>()));
@@ -115,7 +123,7 @@ export const useWidgetsStore = defineStore("widgets", () => {
       return -1;
     }
 
-    //return aggregates.push({ name, value, pointval, pointlist }) - 1;
+    return aggregates.push({ name, type, value}) - 1;
   }
 
   // Saves the temporary array of widget data to a record in local storage.
@@ -126,7 +134,8 @@ export const useWidgetsStore = defineStore("widgets", () => {
     // Get header and record from the data (`name` is already a string so it does not need stringification)
     let header = values.map(i => i.name);
     let record = values.map(i => stringify(i.value));
-    //Also add Points contributed using the points value of certain widgets
+    
+    //Add Points contributed using the points value of certain widgets
     if(points.length > 0){
       header = header.concat("PointsContributed");
       let pointTotal = points.reduce(function(a,b){
@@ -145,16 +154,89 @@ export const useWidgetsStore = defineStore("widgets", () => {
     // Then add the current timestamp as the last field in the record
     header = header.concat("ScoutedTime");
     record = record.concat(new Date().toString());
+
+    let entry = savedData.get(config.name); //moved this line here in order to reference it during aggregate calc
+
+    //AGGREGATES SECTION
     
+    // find the position in array of the team number and use the team number as first col in aggregate table
+    const teampos = header.findIndex(h => h == "TeamNumber");
+    const teamnum = teampos ? record[teampos] : 0;
+    let aggregateHeader = ["team"].concat(aggregates.map(i => i.name + "_" + i.type));
+    
+    //get aggregate data for this submission and then add match and points
+    aggregateHeader.push("PointsContributed_Average");
+    aggregateHeader.push("Matches");
+    let teamAgg: TeamAggregate = {team: stringify(teamnum), aggregates: [stringify(teamnum)].concat(aggregates.map(i => stringify(i.value))).concat(record[record.length-2]).concat("1")} 
+    let newTeamAgg = teamAgg; //this will be used during the calculations for a team that already has data.
+    //check if team already has a record in aggregates, if so use it.
+
+
+    let existingteam = -1;
+    if(entry != undefined){
+      
+      existingteam = entry?.aggregateValues.findIndex(a => a.team == stringify(teamnum));
+    } 
+
+    if (existingteam != -1){
+      let existingdata = entry?.aggregateValues[existingteam];
+
+      //update match count and use it in calculations for averages. 
+      let matchcount = Number(existingdata.aggregates[existingdata.aggregates.length-1]) + 1;
+      newTeamAgg.aggregates[newTeamAgg.aggregates.length-1] = matchcount.toString();
+
+      //update point average
+      let newpoints = Number(teamAgg.aggregates[teamAgg.aggregates.length-2]);
+      let oldpoints = Number(existingdata?.aggregates[existingdata.aggregates.length - 2]);
+      let newAveragePoints = (oldpoints * (matchcount - 1) + newpoints) / matchcount;
+      newTeamAgg.aggregates[newTeamAgg.aggregates.length - 2] = newAveragePoints.toString();
+
+      //update each aggregate
+
+      aggregates.forEach((a, i) => {
+        switch(a.type){
+          case "sum": 
+            newTeamAgg.aggregates[i+1] = String(Number(existingdata.aggregates[i+1]) + a.value);
+            break;
+          case "min":
+            if(a.value < existingdata.aggregates[i +1]){
+              newTeamAgg.aggregates[i+1] = a.value.toString();
+            }
+            break;
+          case "max":
+            if(a.value > existingdata.aggregates[i +1]){
+              newTeamAgg.aggregates[i+1] = a.value.toString();
+            }
+            break;
+          case "average":
+            newTeamAgg.aggregates[i+1] = String(((Number(existingdata.aggregates[i+1]) * (matchcount - 1)) + a.value) / matchcount);
+            break;
+          // case "averageifoverzero":
+          //   newTeamAgg.aggregates[i+1] = String(((Number(existingdata.aggregates[i+1]) * (matchcount - 1)) + a.value) / matchcount);
+          //   break;
+        }
+
+      });
+      
+    }
+
+
     // Add to saved local storage
-    const entry = savedData.get(config.name);
+    
     if (entry === undefined) {
       // The entry for the current configuration name does not exist, create it
-      savedData.set(config.name, { header, values: [record] });
+      savedData.set(config.name, { header, values: [record], aggregateHeaders: aggregateHeader, aggregateValues: [teamAgg] });
     } else {
       // The entry exists, overwrite the header and append the record
       entry.header = header;
       entry.values.push(record);
+      entry.aggregateHeaders = aggregateHeader;
+      if (existingteam != -1){
+        entry.aggregateValues[existingteam] = newTeamAgg;
+      }else {
+        entry.aggregateValues.push(teamAgg);
+      }
+      
     }
   }
 

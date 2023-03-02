@@ -65,7 +65,7 @@ export interface ValidationData {
 }
 
 export interface AggregateData {
-  aggregate: string; //Average, Min, Max and Sum are supported
+  aggregate: string; //Average, AverageIfOverZero, Min, Max and Sum are supported. AverageIfOverZero only uses greater than zero values to calc average
   sortable: boolean;
 }
 
