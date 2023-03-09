@@ -1,6 +1,8 @@
 <template>
   <div id="inspector-container">
-    <InspectorContainer />
+    <Suspense>
+      <InspectorContainer />
+    </Suspense>
   </div>
 </template>
 

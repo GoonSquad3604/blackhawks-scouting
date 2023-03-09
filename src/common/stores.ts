@@ -46,9 +46,9 @@ export const useConfigStore = defineStore("config", () => {
 // Store to contain widget information and saved records
 export const useWidgetsStore = defineStore("widgets", () => {
   // Temporary array for widgets in the current loaded form (stored in RAM)
-  const values = $ref(new Array<WidgetValue>());
-  const points = $ref(new Array<PointValue>());
-  const aggregates = $ref(new Array<AggregateValue>());
+  let values = $ref(new Array<WidgetValue>());
+  let points = $ref(new Array<PointValue>());
+  let aggregates = $ref(new Array<AggregateValue>());
 
   // All saved data (config names in the map correspond to form data for that config, stored on disk)
   const savedData = $ref(useStorage("widgetsSavedData", new Map<string, SavedData>()));
@@ -106,6 +106,7 @@ export const useWidgetsStore = defineStore("widgets", () => {
   function addPoints(key: string | WidgetData, value: Ref, pointval: number, pointlist: number[]){
     let name = null;
 
+    //console.log(key, value, pointval);
     if (typeof key === "string") {
       // String key provided, use it as the name
       name = key;
@@ -145,6 +146,8 @@ export const useWidgetsStore = defineStore("widgets", () => {
     // Get header and record from the data (`name` is already a string so it does not need stringification)
     let header = values.map(i => i.name);
     let record = values.map(i => stringify(i.value));
+
+    console.log('headers', header)
     
     //Add Points contributed using the points value of certain widgets
     if(points.length > 0){
@@ -249,9 +252,19 @@ export const useWidgetsStore = defineStore("widgets", () => {
       }
       
     }
+
+    values = [];
+    points = [];
+    aggregates = [];
   }
 
-  return $$({ values, savedData, lastWidgetRowEnd, downloadLink, makeDownloadLink, addWidgetValue, save, addPoints, addAggregate, makeAggregateDownloadLink });
+  function clearCurrRecord() {
+    values = new Array<WidgetValue>();
+    points = new Array<PointValue>();
+    aggregates = new Array<AggregateValue>();
+  }
+
+  return $$({ values, savedData, lastWidgetRowEnd, downloadLink, makeDownloadLink, addWidgetValue, save, addPoints, addAggregate, makeAggregateDownloadLink, clearCurrRecord });
 });
 
 // Store to contain widget validation status flags

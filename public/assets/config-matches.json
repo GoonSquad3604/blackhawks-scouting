@@ -12,14 +12,7 @@
           "type": "text",
           "colspan": 2
         },
-        {
-          "name": "Starting Position",
-          "type": "positions",
-          "file": "field.png",
-          "allowMultiple": true,
-          "height": 200,
-          "colspan": 2
-        },
+
         {
           "name": "Left Community",
           "type": "checkbox",
@@ -84,7 +77,8 @@
               "aggregate": "average",
               "sortable": true
             }
-          ]
+          ],
+          "points": 8
         },
         {
           "name": "Charging Station Engaged",
@@ -95,7 +89,8 @@
               "aggregate": "average",
               "sortable": true
             }
-          ]
+          ],
+          "points": 4
         }
       ]
     },
@@ -167,6 +162,10 @@
           "type": "checkbox"
         },
         {
+          "name": "Floor Pickup",
+          "type": "checkbox"
+        },
+        {
           "name": "Defense Rating",
           "type": "dropdown",
           "options": [
@@ -176,10 +175,6 @@
             "Very Effective"
           ],
           "labelColspan": 2
-        },
-        {
-          "name": "Timed Cycle",
-          "type": "stopwatch"
         }
       ]
     },

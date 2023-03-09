@@ -11,9 +11,12 @@
       <button @click="deleteData">Delete</button>
       <button @click="downloadData">Download</button>
       <button @click="clearData">Clear All</button>
-      <button v-if="selectedEntry && hasSelectedRecords && selectedRecords.size == 1" @click="generateQRCode">Generate QR Code</button>
-      <span v-else>Select Only 1 record to Generate a QR Code</span>
+      
+      <!-- <button v-if="selectedEntry && hasSelectedRecords && selectedRecords.size == 1" @click="generateQRCode">Generate QR Code</button>
+      <span v-else>Select Only 1 record to Generate a QR Code</span> -->
     </template>
+    <label for="fileupload">Upload Data</label>
+    <input id="fileupload" type="file" accept=".csv" @change="uploadFile" ref="file">
     <br/>
     <label for="team-select">Teams</label>
       <select id="team-select" v-model.number="selectedteam" @change="filterTeams()">
@@ -35,16 +38,41 @@
 
 <script setup lang="ts">
 import InspectorTable from "./InspectorTable.vue";
-import { useWidgetsStore, useTBAStore } from "@/common/stores.js";
-import QrcodeVue from 'qrcode.vue';
-import { QrcodeStream, QrcodeDropZone, QrcodeCapture } from 'vue-qrcode-reader'
+
+import { useWidgetsStore, useTBAStore, useConfigStore } from "@/common/stores.js";
+import assert from 'assert';
+import { parse } from 'csv-parse';
 import { isTemplateElement, jSXAttribute } from "@babel/types";
+import { watch } from 'vue';
 
 
+const config = useConfigStore();
 const widgets = useWidgetsStore();
+
+//Hard code name for now. FIX LATER
+config.name = "matches";
+
+// // Fetch the configuration file
+const fetchResult = await fetch(`${import.meta.env.BASE_URL}assets/config-${config.name}.json`);
+
+if (!fetchResult.ok)
+  throw new Error(`JSON configuration fetch failed: HTTP ${fetchResult.status} (${fetchResult.statusText})`);
+
+ config.data = await fetchResult.json();
+
+//build config array
+let widgetList = [];
+
+config.data.pages.forEach(p =>{
+  widgetList = widgetList.concat(p.widgets);
+  console.log(p)
+});
+
+
+//console.log(widgetList);
+
 let selectedIdx = $ref(0); // The index of the entry selected in the combobox
 let selectedteam = $ref(0);
-
 
 const tba = useTBAStore();
 
@@ -128,6 +156,119 @@ function generateQRCode(): void {
   qrValue = code.join();
   console.log(qrGenerated);
   
+  
+}
+
+async function uploadFile(event: any) {
+  console.log("config",config.data.pages );
+  if(event.target && event.target.files){
+    let datafile = event.target.files[0];
+    if (!confirm(`Upload ${datafile.name}? This will clear all your data and replace with file.`)) {
+      return;
+    }
+    widgets.savedData.clear();
+    selectedIdx = 0; // Reset selected index
+
+    let reader = new FileReader();
+
+    reader.readAsText(datafile);
+    reader.onload = function() {
+      //console.log(reader.result);
+      const lines = reader.result.split('\n')
+      const result = [];
+      const headersparsed = lines[0].split(',');
+      let headers = [];
+
+      headersparsed.forEach(h => {
+        if(h.substring(0,1) == '"'){
+          headers.push(h.substring(1, h.length))
+        }
+        else if(h.substring(h.length-1,h.length) == '"'){
+          headers.push(h.substring(0, h.length-1))
+        }
+        else {
+          headers.push(h)
+        }
+      });
+
+
+      for (let i = 1; i < lines.length; i++) {        
+          if (!lines[i])
+              continue
+          const obj = {}
+          const currentlineparsed = lines[i].split(',');
+          let currentline = [];
+
+          currentlineparsed.forEach(h => {
+            if(h.substring(0,1) == '"'){
+              currentline.push(h.substring(1, h.length))
+            }
+            else if(h.substring(h.length-1,h.length) == '"'){
+              currentline.push(h.substring(0, h.length-1))
+            }
+            else {
+              currentline.push(h)
+            }
+          });
+
+          for (let j = 0; j < headers.length; j++) {
+              obj[headers[j]] = currentline[j]
+          }
+          result.push(obj)
+      }
+
+      //load csv data as completed form widgets. 
+
+      result.forEach(async r =>{
+        
+        //console.log(r)
+        widgets.addWidgetValue("EventKey", r["EventKey"]);
+        widgets.addWidgetValue("MatchLevel", r["MatchLevel"]);
+        widgets.addWidgetValue("MatchNumber", r["MatchNumber"]);
+        widgets.addWidgetValue("Team", r["Team"]);
+        widgets.addWidgetValue("TeamNumber", r["TeamNumber"]);
+
+        widgetList.forEach(w =>{
+          if(w.name){
+            let name = w.name;
+            if(w.prefix){
+              name = w.prefix + "-" + w.name;
+            }
+            widgets.addWidgetValue(name, r[name.replaceAll(/\s/g, "")])
+
+            if((w.type == "checkbox") && w.points){
+              widgets.addPoints(w ,r[name.replaceAll(/\s/g, "")].toLowerCase() === 'true', w.points, []);
+            }
+            else if((w.type == "spinbox") && w.points){
+              widgets.addPoints(w ,Number(r[name.replaceAll(/\s/g, "")]), w.points, []);
+            }     
+            else if(w.pointsForOptions){
+              widgets.addPoints(w, Number(r[name.replaceAll(/\s/g, "")]), 0, w.pointsForOptions);
+            }
+            
+            if(w.aggregates && w.aggregates.length > 0 && w.type == "checkbox"){
+              w.aggregates.forEach(a => {
+                widgets.addAggregate(w, a.aggregate, r[name.replaceAll(/\s/g, "")].toLowerCase() === 'true');
+              });
+            }
+            else if(w.aggregates && w.aggregates.length > 0 && w.type == "spinbox"){ 
+              w.aggregates.forEach(a => {
+                widgets.addAggregate(w, a.aggregate, Number(r[name.replaceAll(/\s/g, "")]));
+              });
+            }
+          }
+        })
+
+        await widgets.save();
+        widgets.clearCurrRecord();
+      });
+
+      console.log(result);
+    };
+    
+    
+  }
+
   
 }
 

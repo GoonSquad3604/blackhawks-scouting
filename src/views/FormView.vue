@@ -19,6 +19,7 @@ import { useRoute } from "vue-router";
 const config = useConfigStore();
 const name = useRoute().query.name?.toString();
 config.name = name ?? "";
+
 </script>
 
 <style>

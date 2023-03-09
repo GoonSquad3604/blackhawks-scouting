@@ -14,13 +14,20 @@
   "dependencies": {
     "@types/lodash": "^4.14.191",
     "@vueuse/core": "^9.12.0",
+    "assert": "^2.0.0",
+    "buffer": "^6.0.3",
+    "csv-parse": "^5.3.6",
+    "jquery-csv": "^1.0.21",
+    "papaparse": "^5.4.0",
     "pinia": "^2.0.30",
     "qrcode.vue": "^3.3.3",
     "vue": "^3.2.47",
+    "vue-papa-parse": "^3.1.0",
     "vue-qrcode-reader": "^3.1.1",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
+    "@rollup/plugin-inject": "^5.0.3",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
     "@vitejs/plugin-vue": "^4.0.0",
