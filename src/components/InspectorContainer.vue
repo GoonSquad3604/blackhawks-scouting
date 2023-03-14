@@ -15,6 +15,10 @@
       <!-- <button v-if="selectedEntry && hasSelectedRecords && selectedRecords.size == 1" @click="generateQRCode">Generate QR Code</button>
       <span v-else>Select Only 1 record to Generate a QR Code</span> -->
     </template>
+    <StreamBarcodeReader
+    @decode="onDecode"
+    @loaded="onLoaded"
+></StreamBarcodeReader>
     <label for="fileupload">Upload Data</label>
     <input id="fileupload" type="file" accept=".csv" @change="uploadFile" ref="file">
     <br/>
@@ -44,6 +48,7 @@ import assert from 'assert';
 import { parse } from 'csv-parse';
 import { isTemplateElement, jSXAttribute } from "@babel/types";
 import { watch } from 'vue';
+import { StreamBarcodeReader } from "vue-barcode-reader";
 
 
 const config = useConfigStore();
@@ -145,6 +150,14 @@ function filterTeams() {
   }
   
 }
+
+function onDecode(text) {
+    console.log(`Decode text from QR code is ${text}`)
+}
+function onLoaded() {
+   console.log(`Ready to start scanning barcodes`)
+}
+
 
 function generateQRCode(): void {
   qrGenerated = true;
