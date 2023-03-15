@@ -22,11 +22,11 @@
     <label for="fileupload">Upload Data</label>
     <input id="fileupload" type="file" accept=".csv" @change="uploadFile" ref="file">
     <br/>
-    <label for="team-select">Teams</label>
+    <!-- <label for="team-select">Teams</label>
       <select id="team-select" v-model.number="selectedteam" @change="filterTeams()">
         <option v-for="team in teams" :key="team.team_number" :value="team.team_number">{{ team.nickname }}</option>
       </select>
-      <button @click="clearTeamFilter">Clear Filter</button>
+      <button @click="clearTeamFilter">Clear Filter</button> -->
   </div>
   <!-- <div class="table-container" >
     <qrcode-vue :value="qrValue" :size="120" level="H" />
@@ -34,7 +34,7 @@
   </div> -->
   <div class="table-container">
     <span v-if="selectedEntry === undefined">No Data</span>
-    <InspectorTable v-else v-model="selectedRecords" :data="selectedEntry" />
+    <InspectorTable v-else v-model="selectedRecords" :data="filteredList" />
   </div>
   <a :hidden="true" :download="entries[selectedIdx]" ref="downloadLink"></a>
   <!-- <qrcode-vue :value="value" :size="size" level="H" /> -->
@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import InspectorTable from "./InspectorTable.vue";
 
-import { useWidgetsStore, useTBAStore, useConfigStore } from "@/common/stores.js";
+import { useWidgetsStore, useTBAStore, useConfigStore, SavedData } from "@/common/stores.js";
 import assert from 'assert';
 import { parse } from 'csv-parse';
 import { isTemplateElement, jSXAttribute } from "@babel/types";
@@ -92,6 +92,7 @@ const entries = $computed(() => [...widgets.savedData.keys()]); // The entries i
 let selectedEntry = $computed(() => widgets.savedData.get(entries[selectedIdx])); // The selected entry
 
 let teams: any[] = tba.savedData.get("teams");
+let filteredList :SavedData = {aggregateHeaders : selectedEntry.aggregateHeaders, aggregateValues : selectedEntry.aggregateValues, values: selectedEntry.values, header: selectedEntry.header }
 
 teams.sort((a, b) => {
   return a.team_number - b.team_number;
@@ -141,8 +142,8 @@ function clearTeamFilter() {
 function filterTeams() {
   
   if(selectedteam > 0 && selectedEntry){
-    let filteredList = selectedEntry.values.filter(v => v.filter( s => s == selectedteam.toString()).length > 0)
-    selectedEntry.values = filteredList;
+    filteredList.values = selectedEntry.values.filter(v => v.filter( s => s == selectedteam.toString()).length > 0)
+    //selectedEntry.values = filteredList;
     return;
   }
   else if(selectedteam == 0){
