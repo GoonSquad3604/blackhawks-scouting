@@ -176,10 +176,10 @@ async function uploadFile(event: any) {
   console.log("config",config.data.pages );
   if(event.target && event.target.files){
     let datafile = event.target.files[0];
-    if (!confirm(`Upload ${datafile.name}? This will clear all your data and replace with file.`)) {
+    if (!confirm(`Upload ${datafile.name}? This will add its data to yours.`)) {
       return;
     }
-    widgets.savedData.clear();
+    //widgets.savedData.clear();
     selectedIdx = 0; // Reset selected index
 
     let reader = new FileReader();
