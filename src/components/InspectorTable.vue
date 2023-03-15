@@ -7,10 +7,10 @@
       </tr>
     </thead>
     <tbody>
-      <label v-for="[i, record] of data.values.entries()" :key="i" :class="{ select: selections.has(i) }">
+      <tr v-for="[i, record] of data.values.entries()" :key="i" :class="{ select: selections.has(i) }">
         <td><input type="checkbox" v-model="selections" :value="i" @change="checkboxClicked(i)" /></td>
         <td v-for="[j, value] of record.entries()" :key="j">{{ value }}</td>
-      </label>
+      </tr>
     </tbody>
   </table>
 </template>
@@ -80,6 +80,24 @@ function checkboxClicked(index: number) {
 
   .select {
     background-color: #464646;
+  }
+
+  tr:hover {
+      
+    background-color: #464646;
+  
+  }
+
+
+  th {
+    max-width: 100px; 
+    word-wrap: break-word !important;
+    white-space: normal;
+  }
+  td {
+    max-width: 100px; 
+    word-wrap: break-word !important;
+    white-space: normal;
   }
 }
 </style>

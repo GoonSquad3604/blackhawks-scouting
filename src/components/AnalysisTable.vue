@@ -73,8 +73,9 @@
       white-space: normal;
     }
     td {
-      max-width: 150px; 
-      overflow-wrap: anywhere !important;;
+      max-width: 100px; 
+      word-wrap: break-word !important;
+      white-space: normal;
     }
   }
   </style>

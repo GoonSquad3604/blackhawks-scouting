@@ -15,10 +15,10 @@
       <!-- <button v-if="selectedEntry && hasSelectedRecords && selectedRecords.size == 1" @click="generateQRCode">Generate QR Code</button>
       <span v-else>Select Only 1 record to Generate a QR Code</span> -->
     </template>
-    <StreamBarcodeReader
+    <!-- <StreamBarcodeReader
     @decode="onDecode"
     @loaded="onLoaded"
-></StreamBarcodeReader>
+></StreamBarcodeReader> -->
     <label for="fileupload">Upload Data</label>
     <input id="fileupload" type="file" accept=".csv" @change="uploadFile" ref="file">
     <br/>
@@ -189,7 +189,7 @@ async function uploadFile(event: any) {
       //console.log(reader.result);
       const lines = reader.result.split('\n')
       const result = [];
-      const headersparsed = lines[0].split(',');
+      const headersparsed = lines[0].split('","');
       let headers = [];
 
       headersparsed.forEach(h => {
@@ -209,7 +209,7 @@ async function uploadFile(event: any) {
           if (!lines[i])
               continue
           const obj = {}
-          const currentlineparsed = lines[i].split(',');
+          const currentlineparsed = lines[i].split('","');
           let currentline = [];
 
           currentlineparsed.forEach(h => {
@@ -261,7 +261,7 @@ async function uploadFile(event: any) {
             
             if(w.aggregates && w.aggregates.length > 0 && w.type == "checkbox"){
               w.aggregates.forEach(a => {
-                widgets.addAggregate(w, a.aggregate, r[name.replaceAll(/\s/g, "")].toLowerCase() === 'true');
+                widgets.addAggregate(w, a.aggregate, Number(r[name.replaceAll(/\s/g, "")].toLowerCase() === 'true'));
               });
             }
             else if(w.aggregates && w.aggregates.length > 0 && w.type == "spinbox"){ 

@@ -167,7 +167,7 @@ export const useWidgetsStore = defineStore("widgets", () => {
     }
     // Then add the current timestamp as the last field in the record
     header = header.concat("ScoutedTime");
-    record = record.concat(new Date().toString());
+    record = record.concat(new Date().toLocaleString());
 
     let entry = savedData.get(config.name); //moved this line here in order to reference it during aggregate calc
 
@@ -223,7 +223,7 @@ export const useWidgetsStore = defineStore("widgets", () => {
             }
             break;
           case "average":
-            newTeamAgg.aggregates[i+1] = String(((Number(existingdata.aggregates[i+1]) * (matchcount - 1)) + a.value) / matchcount);
+            newTeamAgg.aggregates[i+1] = String((((Number(existingdata.aggregates[i+1]) * (matchcount - 1)) + a.value) / matchcount).toFixed(2));
             break;
           // case "averageifoverzero":
           //   newTeamAgg.aggregates[i+1] = String(((Number(existingdata.aggregates[i+1]) * (matchcount - 1)) + a.value) / matchcount);
