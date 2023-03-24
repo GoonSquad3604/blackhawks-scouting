@@ -57,6 +57,7 @@ export interface WidgetData {
   validation?: ValidationData;
   aggregates?: AggregateData[];
   filter?: FilterSetup; // filter on analysis screen
+  gamePiece?: boolean; //if true is used to count game piece total
 }
 
 export interface ValidationData {

@@ -18,19 +18,29 @@
           "type": "checkbox",
           "points": 3
         },
+        
         {
           "type": "picture",
-          "file": "grid.png",
-          "height": 300,
-          "row": 4,
-          "col": 3,
-          "rowspan": 4
+          "file": "cone.png",
+          "height": 100,
+          "col": 2,
+          "row": 3,
+          "rowspan": 2
+        },
+
+        {
+          "type": "picture",
+          "file": "cube.png",
+          "height": 100,
+          "col": 4,
+          "row": 3,
+          "rowspan": 2
         },
         {
-          "name": "Top Scored",
+          "name": "Top Scored CONE",
           "type": "spinbox",
           "prefix": "Auto",
-          "row": 4,
+          "row": 5,
           "col": 1,
           "points": 6,
           "aggregates": [
@@ -38,31 +48,83 @@
               "aggregate": "average",
               "sortable": true
             }
-          ]
+          ],
+          "gamePiece": true
         },
         {
-          "name": "Middle Scored",
+          "name": "Top Scored CUBE",
           "type": "spinbox",
           "prefix": "Auto",
+          "row": 5,
+          "col": 3,
+          "points": 6,
+          "aggregates": [
+            {
+              "aggregate": "average",
+              "sortable": true
+            }
+          ],
+          "gamePiece": true
+        },
+        {
+          "name": "Middle Scored CONE",
+          "type": "spinbox",
+          "prefix": "Auto",
+          "row": 6,
+          "col": 1,
           "points": 4,
           "aggregates": [
             {
               "aggregate": "average",
               "sortable": true
             }
-          ]
+          ],
+          "gamePiece": true
         },
         {
-          "name": "Bottom Scored",
+          "name": "Middle Scored CUBE",
           "type": "spinbox",
           "prefix": "Auto",
+          "row": 6,
+          "col": 3,
+          "points": 4,
+          "aggregates": [
+            {
+              "aggregate": "average",
+              "sortable": true
+            }
+          ],
+          "gamePiece": true
+        },
+        {
+          "name": "Bottom Scored CONE",
+          "type": "spinbox",
+          "prefix": "Auto",
+          "row": 7,
+          "col": 1,
           "points": 3,
           "aggregates": [
             {
               "aggregate": "average",
               "sortable": true
             }
-          ]
+          ],
+          "gamePiece": true
+        },
+        {
+          "name": "Bottom Scored CUBE",
+          "type": "spinbox",
+          "prefix": "Auto",
+          "row": 7,
+          "col": 3,
+          "points": 3,
+          "aggregates": [
+            {
+              "aggregate": "average",
+              "sortable": true
+            }
+          ],
+          "gamePiece": true
         },
         {
           "type": "spacer",
@@ -99,64 +161,106 @@
       "widgets": [
         {
           "type": "picture",
-          "file": "grid.png",
-          "height": 300,
-          "col": 3,
-          "rowspan": 4
+          "file": "cone.png",
+          "height": 100,
+          "col": 2,
+          "row": 3,
+          "rowspan": 2
+        },
+
+        {
+          "type": "picture",
+          "file": "cube.png",
+          "height": 100,
+          "col": 4,
+          "row": 3,
+          "rowspan": 2
         },
         {
-          "name": "Top Scored",
+          "name": "Top Scored CONE",
           "type": "spinbox",
-          "row": 1,
+          "row": 5,
           "col": 1,
-          "points": 5,
+          "points": 6,
           "aggregates": [
             {
               "aggregate": "average",
               "sortable": true
-            },
-            {
-              "aggregate": "max",
-              "sortable": true
             }
-          ]
+          ],
+          "gamePiece": true
         },
         {
-          "name": "Middle Scored",
+          "name": "Top Scored CUBE",
           "type": "spinbox",
+          "row": 5,
+          "col": 3,
+          "points": 6,
+          "aggregates": [
+            {
+              "aggregate": "average",
+              "sortable": true
+            }
+          ],
+          "gamePiece": true
+        },
+        {
+          "name": "Middle Scored CONE",
+          "type": "spinbox",
+          "row": 6,
+          "col": 1,
+          "points": 4,
+          "aggregates": [
+            {
+              "aggregate": "average",
+              "sortable": true
+            }
+          ],
+          "gamePiece": true
+        },
+        {
+          "name": "Middle Scored CUBE",
+          "type": "spinbox",
+          "row": 6,
+          "col": 3,
+          "points": 4,
+          "aggregates": [
+            {
+              "aggregate": "average",
+              "sortable": true
+            }
+          ],
+          "gamePiece": true
+        },
+        {
+          "name": "Bottom Scored CONE",
+          "type": "spinbox",
+          "row": 7,
+          "col": 1,
           "points": 3,
           "aggregates": [
             {
               "aggregate": "average",
               "sortable": true
-            },
-            {
-              "aggregate": "max",
-              "sortable": true
             }
-          ]
+          ],
+          "gamePiece": true
         },
-        
         {
-          "name": "Bottom Scored",
+          "name": "Bottom Scored CUBE",
           "type": "spinbox",
-          "points": 2,
+          "row": 7,
+          "col": 3,
+          "points": 3,
           "aggregates": [
             {
               "aggregate": "average",
               "sortable": true
-            },
-            {
-              "aggregate": "max",
-              "sortable": true
             }
-          ]
+          ],
+          "gamePiece": true
         },
-        {
-          "name": "Links Scored",
-          "type": "spinbox",
-          "points": 5
-        },
+        
         {
           "name": "Co-Op Bonus",
           "type": "checkbox"
