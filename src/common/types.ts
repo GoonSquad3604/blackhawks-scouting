@@ -66,7 +66,7 @@ export interface ValidationData {
 }
 
 export interface AggregateData {
-  aggregate: string; //Average, AverageIfOverZero, Min, Max and Sum are supported. AverageIfOverZero only uses greater than zero values to calc average
+  aggregate: string; //Average, ExclusiveList, Min, Max and Sum are supported. ExclusiveList adds unique values to a string list
   sortable: boolean;
 }
 

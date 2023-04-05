@@ -31,7 +31,6 @@ if (!fetchResult.ok)
 
 config.data = await fetchResult.json();
 
-console.log(777777, config.data)
 
 // Reset widget values array
 widgets.values = [];

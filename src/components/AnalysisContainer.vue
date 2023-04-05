@@ -32,11 +32,13 @@
     
     let sortables = ['rank', 'avgScoreContribution'];
 
+    console.log(widgets.savedData)
+
     getSortables();
 
     function getSortables(){
-        console.log(config);
-        console.log(widgets.savedData);
+        // console.log(config);
+        // console.log(widgets.savedData);
     }
     
   </script>

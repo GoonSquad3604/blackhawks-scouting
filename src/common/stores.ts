@@ -207,6 +207,8 @@ export const useWidgetsStore = defineStore("widgets", () => {
 
       //update each aggregate
 
+      console.log("aggs", aggregates)
+
       aggregates.forEach((a, i) => {
         switch(a.type){
           case "sum": 
@@ -225,9 +227,20 @@ export const useWidgetsStore = defineStore("widgets", () => {
           case "average":
             newTeamAgg.aggregates[i+1] = String((((Number(existingdata.aggregates[i+1]) * (matchcount - 1)) + a.value) / matchcount).toFixed(2));
             break;
-          // case "averageifoverzero":
-          //   newTeamAgg.aggregates[i+1] = String(((Number(existingdata.aggregates[i+1]) * (matchcount - 1)) + a.value) / matchcount);
-          //   break;
+          case "exclusiveList":
+            var list = existingdata.aggregates[i+1].split(";");
+            if(list.length > 0){
+              var founditem = list.filter(l => Number(l));
+              if(founditem.length < 1){
+                newTeamAgg.aggregates[i+1] = existingdata.aggregates[i+1] + a.value + ";"
+              }
+            }
+            else {
+              newTeamAgg.aggregates[i+1] = a.value + ";";
+            }
+            
+            break;
+
         }
 
       });
@@ -256,6 +269,10 @@ export const useWidgetsStore = defineStore("widgets", () => {
     values = [];
     points = [];
     aggregates = [];
+    aggregateHeader = [];
+    
+
+    clearCurrRecord();
   }
 
   function clearCurrRecord() {

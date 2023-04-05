@@ -12,7 +12,15 @@
           "type": "text",
           "colspan": 2
         },
-
+        {
+          "name": "Starting Location",
+          "type": "dropdown",
+          "options": [
+            "Open Lane (Next to Loading Zone)",
+            "Cable Protector Lane",
+            "Behind Charging Station"
+          ]
+        },
         {
           "name": "Left Community",
           "type": "checkbox",
@@ -24,7 +32,7 @@
           "file": "cone.png",
           "height": 100,
           "col": 2,
-          "row": 3,
+          "row": 4,
           "rowspan": 2
         },
 
@@ -33,14 +41,14 @@
           "file": "cube.png",
           "height": 100,
           "col": 4,
-          "row": 3,
+          "row": 4,
           "rowspan": 2
         },
         {
           "name": "Top Scored CONE",
           "type": "spinbox",
           "prefix": "Auto",
-          "row": 5,
+          "row": 6,
           "col": 1,
           "points": 6,
           "aggregates": [
@@ -55,7 +63,7 @@
           "name": "Top Scored CUBE",
           "type": "spinbox",
           "prefix": "Auto",
-          "row": 5,
+          "row": 6,
           "col": 3,
           "points": 6,
           "aggregates": [
@@ -70,7 +78,7 @@
           "name": "Middle Scored CONE",
           "type": "spinbox",
           "prefix": "Auto",
-          "row": 6,
+          "row": 7,
           "col": 1,
           "points": 4,
           "aggregates": [
@@ -85,7 +93,7 @@
           "name": "Middle Scored CUBE",
           "type": "spinbox",
           "prefix": "Auto",
-          "row": 6,
+          "row": 7,
           "col": 3,
           "points": 4,
           "aggregates": [
@@ -100,7 +108,7 @@
           "name": "Bottom Scored CONE",
           "type": "spinbox",
           "prefix": "Auto",
-          "row": 7,
+          "row": 8,
           "col": 1,
           "points": 3,
           "aggregates": [
@@ -115,7 +123,7 @@
           "name": "Bottom Scored CUBE",
           "type": "spinbox",
           "prefix": "Auto",
-          "row": 7,
+          "row": 8,
           "col": 3,
           "points": 3,
           "aggregates": [
@@ -129,6 +137,11 @@
         {
           "type": "spacer",
           "height": 40
+        },
+        {
+          "name": "Attempted to Dock",
+          "type": "checkbox",
+          "labelColspan": 2
         },
         {
           "name": "Docked To Charging Station",
@@ -260,14 +273,43 @@
           ],
           "gamePiece": true
         },
-        
         {
-          "name": "Co-Op Bonus",
-          "type": "checkbox"
+          "name": "Pickup Locations",
+          "type": "heading"
         },
         {
-          "name": "Floor Pickup",
-          "type": "checkbox"
+          "name": "Pickup From Ground",
+          "type": "dropdown",
+          "options": [
+            "No",
+            "Cubes Only",
+            "Cones Only",
+            "Both"
+          ]
+        },
+        {
+          "name": "Pickup From Feeder Station",
+          "type": "dropdown",
+          "options": [
+            "No",
+            "Cubes Only",
+            "Cones Only",
+            "Both"
+          ]
+        },
+        {
+          "name": "Pickup From Shelf",
+          "type": "dropdown",
+          "options": [
+            "No",
+            "Cubes Only",
+            "Cones Only",
+            "Both"
+          ]
+        },
+        {
+          "name": "Defense",
+          "type": "heading"
         },
         {
           "name": "Defense Rating",
@@ -277,8 +319,7 @@
             "Not Effective",
             "Average",
             "Very Effective"
-          ],
-          "labelColspan": 2
+          ]
         }
       ]
     },

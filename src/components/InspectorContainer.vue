@@ -34,7 +34,7 @@
   </div> -->
   <div class="table-container">
     <span v-if="selectedEntry === undefined">No Data</span>
-    <InspectorTable v-else v-model="selectedRecords" :data="filteredList" />
+    <InspectorTable v-else v-model="selectedRecords" :data="selectedEntry" />
   </div>
   <a :hidden="true" :download="entries[selectedIdx]" ref="downloadLink"></a>
   <!-- <qrcode-vue :value="value" :size="size" level="H" /> -->
@@ -70,7 +70,7 @@ let widgetList = [];
 
 config.data.pages.forEach(p =>{
   widgetList = widgetList.concat(p.widgets);
-  console.log(p)
+  //console.log(p)
 });
 
 
@@ -92,7 +92,7 @@ const entries = $computed(() => [...widgets.savedData.keys()]); // The entries i
 let selectedEntry = $computed(() => widgets.savedData.get(entries[selectedIdx])); // The selected entry
 
 let teams: any[] = tba.savedData.get("teams");
-let filteredList :SavedData = {aggregateHeaders : selectedEntry.aggregateHeaders, aggregateValues : selectedEntry.aggregateValues, values: selectedEntry.values, header: selectedEntry.header }
+//let filteredList :SavedData = {aggregateHeaders : selectedEntry.aggregateHeaders, aggregateValues : selectedEntry.aggregateValues, values: selectedEntry.values, header: selectedEntry.header }
 
 teams.sort((a, b) => {
   return a.team_number - b.team_number;
@@ -141,14 +141,14 @@ function clearTeamFilter() {
 
 function filterTeams() {
   
-  if(selectedteam > 0 && selectedEntry){
-    filteredList.values = selectedEntry.values.filter(v => v.filter( s => s == selectedteam.toString()).length > 0)
-    //selectedEntry.values = filteredList;
-    return;
-  }
-  else if(selectedteam == 0){
-    clearTeamFilter()
-  }
+  // if(selectedteam > 0 && selectedEntry){
+  //   filteredList.values = selectedEntry.values.filter(v => v.filter( s => s == selectedteam.toString()).length > 0)
+  //   //selectedEntry.values = filteredList;
+  //   return;
+  // }
+  // else if(selectedteam == 0){
+  //   clearTeamFilter()
+  // }
   
 }
 
